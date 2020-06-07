@@ -1,0 +1,43 @@
+{% extends'base.html.twig' %}
+
+{% block title 'Admin Interface' %}
+{% block body %}
+    <div class="container mt-4">
+        <div class="mb-4 row">
+            <h1 class="col-sm-8">list, add, edit and delete </h1>
+            <a href="{{ path('calculator') }}" class="btn btn-primary col-sm-2">Calculator</a>
+        </div>
+        <h1></h1>
+        <table class="table table-bordered table-striped table-hover mt-3">
+            <thead>
+            <tr>
+                <th>Expense type</th>
+                <th>Ratio (carbon footprint per Euro spent)</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.getExpenseType() }}</td>
+                <td>{{ expense.getRatio() }}</td>
+                <td>
+                    <a href="{{ path('admin.expense.edit',{id: expense.id}) }}" class="btn btn-outline-primary">Edit</a>
+                    <form method="post" action="{{ path('admin.expense.delete',{id: expense.id}) }}"
+                          style="display:inline-block"
+                          onsubmit="return confirm('Do you really want to delete this expense ?')">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value={{ csrf_token('delete' ~ expense.id) }}>
+                        <button class="btn btn-outline-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+             {% endfor %}
+            </tbody>
+
+        </table>
+        <div class="text-right">
+            <a href="{{ path('admin.expense.new') }}" class=" btn btn-primary">Create new data</a>
+        </div>
+    </div>
+{% endblock %}

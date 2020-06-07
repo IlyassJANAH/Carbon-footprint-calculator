@@ -1,0 +1,60 @@
+{# templates/Calculator/index.html.twig #}
+{% extends'base.html.twig' %}
+
+{% block title 'Admin Interface' %}
+{% block body %}
+    <div class="container mt-4">
+        <div class="mb-4 row">
+            <h1 class="col-sm-4">Calculator</h1>
+            <a href="{{ path('admin.expense.index') }}" class="btn btn-primary col-sm-2">Admin</a>
+        </div>
+        <form onsubmit="ShowResult()" id="form">
+            <fieldset class="border p-2">
+                <legend class="w-auto">Calculate your footprint</legend>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Expense type :</label>
+                    <div class="col-sm-4">
+                        <select name="ratio" id="ratio" class="form-control">
+                            {% for expense in expenses %}
+                                <option value="{{ expense.getRatio() }}">{{ expense.getExpenseType() }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Amount (euro) :</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" type="number" name="amount" id="amount" required>
+                    </div>
+                </div>
+
+                <button type="submit" class=" btn btn-primary">Calculer</button>
+            </fieldset>
+
+
+
+        </form>
+
+        <div style="display: none" id="ResultText"><h4>Your CO2 footprint for this expense is: <b id="result"></b></h4></div>
+
+
+    </div>
+{% endblock %}
+<!--********************* Calculate and display the carbon footprint of the expense selected  ***************** !-->
+{% block javascripts %}
+    <script>
+        let form = document.getElementById("form");
+        function handleForm(event) { event.preventDefault(); }
+        form.addEventListener('submit', handleForm);
+        function ShowResult(){
+            let amount = document.getElementById('amount').value;
+            let e = document.getElementById("ratio");
+            let ratio = e.options[e.selectedIndex].value;
+            let result = (ratio * amount) * 0.001;
+            document.getElementById("ResultText").style.display="block";
+            let btn = document.getElementById("result").innerHTML = result +" kg";
+            document.body.appendChild(btn);
+        }
+
+    </script>
+{% endblock %}
